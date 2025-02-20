@@ -18,25 +18,38 @@ const Todos = () => {
         { Task: input }
       );
       setInput("");
-      // console.log(response);
       toast.success("Your Todo is Add Successfully");
     } catch (error) {
       toast.error(error.message);
     }
   };
-  // console.log(addTodo())
   const fecthTodo = async () => {
     try {
       const response = await databses.listDocuments(DATABASE_ID, COLLECTION_ID);
       setTask(response.documents);
-      console.log(response);
     } catch (error) {
       toast.error(error.warring);
     }
   };
   useEffect(() => {
     fecthTodo();
-  }, []);
+  }, [task]);
+
+  const handleClick = async (documentId) => {
+    try {
+      const response = await databses.deleteDocument(
+        DATABASE_ID,
+        COLLECTION_ID,
+        documentId
+      );
+      setTask((prevTasks) =>
+        prevTasks.filter((task) => task !== documentId)
+      );
+      toast.success("Task Delete Successfully");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <>
@@ -63,11 +76,22 @@ const Todos = () => {
             </button>
           </div>
           <ul className="mt-4 space-y-2">
-            {task.map((e) => {
-              console.log(e);
+            {task.map((task) => {
               return (
-                <li key={e.$id} className="mb-2">
-                  {e.Task}
+                <li
+                  className="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white flex justify-between items-center"
+                  key={task.$id}
+                >
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" className="w-5 h-5" />
+                    <span>{task.Task}</span>
+                  </div>
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
+                    onClick={() => handleClick(task.$id)}
+                  >
+                    Delete
+                  </button>
                 </li>
               );
             })}
