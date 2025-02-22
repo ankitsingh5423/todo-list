@@ -42,13 +42,15 @@ const Todos = () => {
         COLLECTION_ID,
         documentId
       );
-      setTask((prevTasks) =>
-        prevTasks.filter((task) => task !== documentId)
-      );
+      setTask((prevTasks) => prevTasks.filter((task) => task !== documentId));
       toast.success("Task Delete Successfully");
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  const handelCheck = (event) => {
+    
   };
 
   return (
@@ -83,7 +85,12 @@ const Todos = () => {
                   key={task.$id}
                 >
                   <div className="flex items-center space-x-2">
-                    <input type="checkbox" className="w-5 h-5" />
+                    <input
+                      type="checkbox"
+                      checked={task.completed || false}
+                      onChange={() => handelCheck(task.$id)}
+                      className="w-5 h-5"
+                    />
                     <span>{task.Task}</span>
                   </div>
                   <button
@@ -96,6 +103,9 @@ const Todos = () => {
               );
             })}
           </ul>
+          <button className="bg-red-500 text-white px-4 py-1 mt-3 rounded-lg hover:bg-red-600 inline-block mx-auto">
+            Delete
+          </button>
         </div>
       </div>
     </>
