@@ -8,16 +8,15 @@ const COLLECTION_ID = "67b4ddb9000b3934d3e3";
 const Todos = () => {
   const [input, setInput] = useState("");
   const [task, setTask] = useState([]);
+  const [selectedTasks, setSelectedTasks] = useState([]);
 
   const addTodo = async () => {
     try {
-      const response = await databses.createDocument(
-        DATABASE_ID,
-        COLLECTION_ID,
-        "unique()",
-        { Task: input }
-      );
+      await databses.createDocument(DATABASE_ID, COLLECTION_ID, "unique()", {
+        Task: input,
+      });
       setInput("");
+      fecthTodo();
       toast.success("Your Todo is Add Successfully");
     } catch (error) {
       toast.error(error.message);
@@ -31,9 +30,10 @@ const Todos = () => {
       toast.error(error.warring);
     }
   };
+
   useEffect(() => {
     fecthTodo();
-  }, [task]);
+  }, []);
 
   const handleClick = async (documentId) => {
     try {
@@ -42,15 +42,43 @@ const Todos = () => {
         COLLECTION_ID,
         documentId
       );
-      setTask((prevTasks) => prevTasks.filter((task) => task !== documentId));
+      fecthTodo();
       toast.success("Task Delete Successfully");
     } catch (error) {
       toast.error(error.message);
     }
   };
 
-  const handelCheck = (event) => {
-    
+  const handleCheck = (event, taskId) => {
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setSelectedTasks((prev) => [...prev, taskId]);
+    } else {
+      const filtered = selectedTasks.filter((task) => task != taskId);
+      setSelectedTasks(filtered);
+    }
+  };
+
+  const handleDeleteSelectedTask = async () => {
+    if (selectedTasks.length >= 1) {
+      try {
+        await Promise.all(
+          selectedTasks.map(
+            async (taskId) =>
+              await databses.deleteDocument(DATABASE_ID, COLLECTION_ID, taskId)
+          )
+        );
+
+        setSelectedTasks([]);
+        fecthTodo();
+        toast.success("Todo deleted successfully");
+      } catch (error) {
+        toast.error(error.message);
+      }
+    } else {
+      toast.error("Please select the task");
+    }
   };
 
   return (
@@ -87,8 +115,7 @@ const Todos = () => {
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
-                      checked={task.completed || false}
-                      onChange={() => handelCheck(task.$id)}
+                      onChange={(event) => handleCheck(event, task.$id)}
                       className="w-5 h-5"
                     />
                     <span>{task.Task}</span>
@@ -103,7 +130,10 @@ const Todos = () => {
               );
             })}
           </ul>
-          <button className="bg-red-500 text-white px-4 py-1 mt-3 rounded-lg hover:bg-red-600 inline-block mx-auto">
+          <button
+            className="bg-red-500 text-white px-4 py-1 mt-3 rounded-lg hover:bg-red-600 inline-block mx-auto"
+            onClick={handleDeleteSelectedTask}
+          >
             Delete
           </button>
         </div>
