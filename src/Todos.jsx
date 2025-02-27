@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { databses } from "./config";
+import { databases } from "./config";
 import { toast } from "react-toastify";
 
 const DATABASE_ID = "67b4dd9c0006b164498a";
@@ -12,7 +12,7 @@ const Todos = () => {
 
   const addTodo = async () => {
     try {
-      await databses.createDocument(DATABASE_ID, COLLECTION_ID, "unique()", {
+      await databases.createDocument(DATABASE_ID, COLLECTION_ID, "unique()", {
         Task: input,
       });
       setInput("");
@@ -24,7 +24,7 @@ const Todos = () => {
   };
   const fecthTodo = async () => {
     try {
-      const response = await databses.listDocuments(DATABASE_ID, COLLECTION_ID);
+      const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID);
       setTask(response.documents);
     } catch (error) {
       toast.error(error.warring);
@@ -37,7 +37,7 @@ const Todos = () => {
 
   const handleClick = async (documentId) => {
     try {
-      const response = await databses.deleteDocument(
+      const response = await databases.deleteDocument(
         DATABASE_ID,
         COLLECTION_ID,
         documentId
@@ -66,7 +66,7 @@ const Todos = () => {
         await Promise.all(
           selectedTasks.map(
             async (taskId) =>
-              await databses.deleteDocument(DATABASE_ID, COLLECTION_ID, taskId)
+              await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, taskId)
           )
         );
 
