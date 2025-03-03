@@ -9,6 +9,8 @@ const Todos = () => {
   const [input, setInput] = useState("");
   const [task, setTask] = useState([]);
   const [selectedTasks, setSelectedTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const addTodo = async () => {
     try {
@@ -24,7 +26,10 @@ const Todos = () => {
   };
   const fecthTodo = async () => {
     try {
-      const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID);
+      const response = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTION_ID
+      );
       setTask(response.documents);
     } catch (error) {
       toast.error(error.warring);
