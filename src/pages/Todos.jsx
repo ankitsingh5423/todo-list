@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { databases } from "./config";
+import { databases } from "../config/config";
 import { toast } from "react-toastify";
 
 const DATABASE_ID = "67b4dd9c0006b164498a";
@@ -25,6 +25,7 @@ const Todos = () => {
   };
   const fecthTodo = async () => {
     try {
+      setIsLoading(true);
       const response = await databases.listDocuments(
         DATABASE_ID,
         COLLECTION_ID
@@ -32,6 +33,8 @@ const Todos = () => {
       setTask(response.documents);
     } catch (error) {
       toast.error(error.warring);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -109,31 +112,37 @@ const Todos = () => {
               Add
             </button>
           </div>
-          <ul className="mt-4 space-y-2">
-            {task.map((task) => {
-              return (
-                <li
-                  className="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white flex justify-between items-center"
-                  key={task.$id}
-                >
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      onChange={(event) => handleCheck(event, task.$id)}
-                      className="w-5 h-5"
-                    />
-                    <span>{task.Task}</span>
-                  </div>
-                  <button
-                    className="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
-                    onClick={() => handleClick(task.$id)}
+          {isLoading ? (
+            <h1 className="text-center mt-5 text-amber-50 text-2xl">
+              Loading....
+            </h1>
+          ) : (
+            <ul className="mt-4 space-y-2">
+              {task.map((task) => {
+                return (
+                  <li
+                    className="p-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white flex justify-between items-center"
+                    key={task.$id}
                   >
-                    Delete
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        onChange={(event) => handleCheck(event, task.$id)}
+                        className="w-5 h-5"
+                      />
+                      <span>{task.Task}</span>
+                    </div>
+                    <button
+                      className="bg-red-500 text-white px-2 py-1 rounded-lg hover:bg-red-600"
+                      onClick={() => handleClick(task.$id)}
+                    >
+                      Delete
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
           <button
             className="bg-red-500 text-white px-4 py-1 mt-3 rounded-lg hover:bg-red-600 inline-block mx-auto"
             onClick={handleDeleteSelectedTask}

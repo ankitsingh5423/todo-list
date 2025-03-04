@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { account } from "./config";
+import { account } from "../config/config";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -10,9 +10,10 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
       await account.createEmailPasswordSession(email, password);
-      navigate("/todos");
+      navigate("/");
       toast.success("Login Successful");
     } catch (error) {
       toast.error(error.message);
