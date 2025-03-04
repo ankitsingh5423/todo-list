@@ -11,7 +11,6 @@ const Todos = () => {
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const addTodo = async () => {
     try {
       await databases.createDocument(DATABASE_ID, COLLECTION_ID, "unique()", {
