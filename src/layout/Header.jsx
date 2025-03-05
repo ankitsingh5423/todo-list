@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -9,15 +10,15 @@ const Header = () => {
 
         {/* Navigation Links for Large Screens */}
         <nav className="hidden md:flex space-x-6">
-          <a href="#" className="hover:text-gray-300">
+          <Link to="/" className="hover:text-gray-300">
             Home
-          </a>
-          <a href="#" className="hover:text-gray-300">
+          </Link>
+          <Link to="/about" className="hover:text-gray-300">
             About
-          </a>
-          <a href="#" className="hover:text-gray-300">
+          </Link>
+          <Link to="/todos" className="hover:text-gray-300">
             Todo
-          </a>
+          </Link>
         </nav>
 
         {/* Logout Button for Large Screens */}
@@ -32,15 +33,15 @@ const Header = () => {
       {/* Mobile Navigation (Hidden by default) */}
       <div className="md:hidden bg-gray-700 py-3">
         <nav className="flex flex-col items-center space-y-4">
-          <a href="#" className="hover:text-gray-300">
+          <Link to="/" className="hover:text-gray-300">
             Home
-          </a>
-          <a href="#" className="hover:text-gray-300">
+          </Link>
+          <Link to="/about" className="hover:text-gray-300">
             About
-          </a>
-          <a href="#" className="hover:text-gray-300">
+          </Link>
+          <Link to="/todo" className="hover:text-gray-300">
             Todo
-          </a>
+          </Link>
           <button className="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600">
             Logout
           </button>
